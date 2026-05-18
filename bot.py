@@ -8,8 +8,9 @@ from discord import app_commands
 from discord.ext import commands
 
 DISCORD_BOT_TOKEN = os.environ["DISCORD_BOT_TOKEN"]
+GROK_API_KEY = os.environ["GROK_API_KEY"]
 
-CHAT_API_URL = "https://text.pollinations.ai/openai"
+CHAT_API_URL = "https://api.x.ai/v1/chat/completions"
 IMAGE_API_URL = "https://image.pollinations.ai/prompt/{prompt}"
 PERSONA_FILE = os.path.join(os.path.dirname(__file__), "persona.json")
 
@@ -65,13 +66,17 @@ async def chat_with_ai(user_id: int, user_message: str) -> str:
     messages.append({"role": "user", "content": user_message})
 
     payload = {
-        "model": "openai",
+        "model": "grok-3-mini",
         "messages": messages,
-        "seed": random.randint(1, 99999),
+    }
+
+    headers = {
+        "Authorization": f"Bearer {GROK_API_KEY}",
+        "Content-Type": "application/json",
     }
 
     async with aiohttp.ClientSession() as session:
-        async with session.post(CHAT_API_URL, json=payload, timeout=aiohttp.ClientTimeout(total=30)) as resp:
+        async with session.post(CHAT_API_URL, json=payload, headers=headers, timeout=aiohttp.ClientTimeout(total=30)) as resp:
             data = await resp.json()
             reply = data["choices"][0]["message"]["content"]
 
