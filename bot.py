@@ -8,9 +8,9 @@ from discord import app_commands
 from discord.ext import commands
 
 DISCORD_BOT_TOKEN = os.environ["DISCORD_BOT_TOKEN"]
-GROK_API_KEY = os.environ["GROK_API_KEY"]
+GROQ_API_KEY = os.environ["GROQ_API_KEY"]
 
-CHAT_API_URL = "https://api.x.ai/v1/chat/completions"
+CHAT_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 IMAGE_API_URL = "https://image.pollinations.ai/prompt/{prompt}"
 PERSONA_FILE = os.path.join(os.path.dirname(__file__), "persona.json")
 
@@ -66,12 +66,12 @@ async def chat_with_ai(user_id: int, user_message: str) -> str:
     messages.append({"role": "user", "content": user_message})
 
     payload = {
-        "model": "grok-3-mini",
+        "model": "llama-3.3-70b-versatile",
         "messages": messages,
     }
 
     headers = {
-        "Authorization": f"Bearer {GROK_API_KEY}",
+        "Authorization": f"Bearer {GROQ_API_KEY}",
         "Content-Type": "application/json",
     }
 
